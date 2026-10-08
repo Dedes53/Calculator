@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <script src="script.js" defer></script>
+    <link rel="icon" type="image/svg" href="logo2.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>CalculaIT</h1>
+    </header>
+
+    <main>
+        <input type="text" id="currentNumber" name="currentNumber" required disabled>
+
+        <button class="number-btn" onclick="populate(1)">1</button>
+        <button class="number-btn" onclick="populate(2)">2</button>
+        <button class="number-btn" onclick="populate(3)">3</button>
+        <button class="number-btn" onclick="populate(4)">4</button>
+        <button class="number-btn" onclick="populate(5)">5</button>
+        <button class="number-btn" onclick="populate(6)">6</button>
+        <button class="number-btn" onclick="populate(7)">7</button>
+        <button class="number-btn" onclick="populate(8)">8</button>
+        <button class="number-btn" onclick="populate(9)">9</button>
+        <button class="number-btn" onclick="populate(0)">0</button>
+        <button class="operation-btn" onclick="operate('+')">+</button>
+        <button class="operation-btn" onclick="operate('-')">-</button>
+        <button class="operation-btn" onclick="operate('*')">*</button>
+        <button class="operation-btn" onclick="operate('/')">/</button>
+        <button id="decimal-dot" onclick="disableDot()">.</button>
+        <button onclick="deleteLast()">C</button>
+        <button onclick="clearCalculation()">AC</button>
+        <button class="calculation-btn" onclick="calculate()">=</button>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Calculator App</p>
+    </footer>
+</body>
+
+</html>
