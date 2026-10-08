@@ -2,40 +2,71 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CalculaIT - Accessible Online Calculator</title>
+    <meta name="description"
+        content="An accessible online calculator usable with keyboard and assistive technologies." />
+    <link rel="icon" type="image/svg+xml" href="logo.svg" />
+    <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
-    <link rel="icon" type="image/svg" href="logo.svg">
-    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <a class="skip-link" href="#calculator">Skip to calculator</a>
+
     <header>
         <h1>CalculaIT</h1>
     </header>
 
-    <main>
-        <input type="text" id="currentNumber" name="currentNumber" required disabled>
+    <main id="calculator" aria-labelledby="calculator-title">
+        <section class="calculator" role="region" aria-labelledby="calculator-title">
+            <h2 id="calculator-title" class="sr-only">Calculator</h2>
 
-        <button class="number-btn" onclick="populate(1)">1</button>
-        <button class="number-btn" onclick="populate(2)">2</button>
-        <button class="number-btn" onclick="populate(3)">3</button>
-        <button class="number-btn" onclick="populate(4)">4</button>
-        <button class="number-btn" onclick="populate(5)">5</button>
-        <button class="number-btn" onclick="populate(6)">6</button>
-        <button class="number-btn" onclick="populate(7)">7</button>
-        <button class="number-btn" onclick="populate(8)">8</button>
-        <button class="number-btn" onclick="populate(9)">9</button>
-        <button class="number-btn" onclick="populate(0)">0</button>
-        <button class="operation-btn" onclick="operate('+')">+</button>
-        <button class="operation-btn" onclick="operate('-')">-</button>
-        <button class="operation-btn" onclick="operate('*')">*</button>
-        <button class="operation-btn" onclick="operate('/')">/</button>
-        <button id="decimal-dot" onclick="disableDot()">.</button>
-        <button onclick="deleteLast()">C</button>
-        <button onclick="clearCalculation()">AC</button>
-        <button class="calculation-btn" onclick="calculate()">=</button>
+            <label for="currentNumber" class="sr-only">Calculator display</label>
+            <input type="text" id="currentNumber" name="currentNumber" inputmode="decimal" readonly aria-live="polite"
+                aria-atomic="true" aria-describedby="calculator-help" value="" />
+
+            <p id="calculator-help" class="sr-only">
+                Use buttons or keyboard: numbers, operators, Enter to calculate,
+                Backspace to delete last character, Escape to clear all.
+            </p>
+
+            <p id="status-message" class="sr-only" aria-live="assertive" aria-atomic="true"></p>
+
+            <div class="keypad" role="group" aria-label="Calculator keypad">
+                <button type="button" class="number-btn area-n1" onclick="populate('1')" aria-label="One">1</button>
+                <button type="button" class="number-btn area-n2" onclick="populate('2')" aria-label="Two">2</button>
+                <button type="button" class="number-btn area-n3" onclick="populate('3')" aria-label="Three">3</button>
+                <button type="button" class="number-btn area-n4" onclick="populate('4')" aria-label="Four">4</button>
+                <button type="button" class="number-btn area-n5" onclick="populate('5')" aria-label="Five">5</button>
+                <button type="button" class="number-btn area-n6" onclick="populate('6')" aria-label="Six">6</button>
+                <button type="button" class="number-btn area-n7" onclick="populate('7')" aria-label="Seven">7</button>
+                <button type="button" class="number-btn area-n8" onclick="populate('8')" aria-label="Eight">8</button>
+                <button type="button" class="number-btn area-n9" onclick="populate('9')" aria-label="Nine">9</button>
+                <button type="button" class="number-btn area-n0" onclick="populate('0')" aria-label="Zero">0</button>
+
+                <button type="button" class="operation-btn area-plus" onclick="operate('+')"
+                    aria-label="Addition">+</button>
+                <button type="button" class="operation-btn area-minus" onclick="operate('-')"
+                    aria-label="Subtraction">−</button>
+                <button type="button" class="operation-btn area-mul" onclick="operate('*')"
+                    aria-label="Multiplication">×</button>
+                <button type="button" class="operation-btn area-div" onclick="operate('/')"
+                    aria-label="Division">÷</button>
+
+                <button type="button" id="plus-minus" class="plus-minus area-pn" onclick="toggleSign()"
+                    aria-label="Toggle plus minus">+/-</button>
+                <button type="button" id="decimal-dot" class="decimal-dot area-dot" onclick="insertDot()"
+                    aria-label="Decimal point">.</button>
+
+                <button type="button" class="area-ac" onclick="deleteLast()"
+                    aria-label="Delete last character">C</button>
+                <button type="button" class="area-clear" onclick="clearCalculation()" aria-label="Clear all">AC</button>
+                <button type="button" class="calculation-btn area-equal" onclick="calculate()"
+                    aria-label="Calculate result">=</button>
+            </div>
+        </section>
     </main>
 
     <footer>

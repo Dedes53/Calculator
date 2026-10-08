@@ -1,15 +1,32 @@
 const inputField = document.getElementById('currentNumber');
+const decimalDotButton = document.getElementById('decimal-dot');
 
 const allowedOperators = ['+', '-', '*', '/'];
 
-setupKeyboardInput();
+if (!inputField) {
+    console.error("Elemento #currentNumber non trovato nel DOM.");
+} else {
+    setupKeyboardInput();
+    setupButtonInput(); // <- importante per i click
+    syncDecimalDotState();
+}
 
 function setupKeyboardInput() {
     document.addEventListener('keydown', handleKeyboardInput);
 }
 
+// Collega i pulsanti se usi onclick HTML o data attributes
+function setupButtonInput() {
+    if (decimalDotButton) {
+        decimalDotButton.addEventListener('click', insertDot);
+    }
+}
+
 function handleKeyboardInput(e) {
     const key = e.key;
+
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(key)) return;
 
     if (key === 'Enter' || key === '=') {
         e.preventDefault();
@@ -20,6 +37,12 @@ function handleKeyboardInput(e) {
     if (key === 'Backspace') {
         e.preventDefault();
         deleteLast();
+        return;
+    }
+
+    if (key === 'Escape') {
+        e.preventDefault();
+        clearCalculation();
         return;
     }
 
@@ -37,15 +60,15 @@ function handleKeyboardInput(e) {
 
     if (key === '.') {
         e.preventDefault();
-
-        const currentToken = getCurrentToken();
-        if (!currentToken.includes('.')) {
-            disableDot();
-        }
+        insertDot();
         return;
     }
 
     e.preventDefault();
+}
+
+function isOperator(value) {
+    return allowedOperators.includes(value);
 }
 
 function getCurrentToken() {
@@ -55,7 +78,6 @@ function getCurrentToken() {
     let opIndex = -1;
     for (let i = 1; i < value.length; i++) {
         const ch = value[i];
-
         if (ch === '+' || ch === '*' || ch === '/') {
             opIndex = i;
         } else if (ch === '-') {
@@ -63,39 +85,32 @@ function getCurrentToken() {
             if (!isOperator(prev)) opIndex = i;
         }
     }
-
     return opIndex === -1 ? value : value.slice(opIndex + 1);
 }
 
-function disableDot() {
+function syncDecimalDotState() {
+    if (!decimalDotButton) return;
+    decimalDotButton.disabled = getCurrentToken().includes('.');
+}
+
+function populate(toPopulate) {
+    inputField.value += toPopulate;
+    syncDecimalDotState();
+}
+
+function insertDot() {
     const current = inputField.value;
     const lastChar = current.slice(-1);
 
     if (current === '' || isOperator(lastChar)) {
         inputField.value += '0.';
     } else {
+        const token = getCurrentToken();
+        if (token.includes('.')) return;
         inputField.value += '.';
     }
 
-    document.getElementById('decimal-dot').disabled = true;
-}
-
-function populate(toPopulate) {
-    inputField.value += toPopulate;
-    return inputField;
-}
-
-function getOperationFromInputField() {
-    const value = inputField.value.trim();
-
-    const match = value.match(/^(-?\d*\.?\d+)([+\-*/])(-?\d*\.?\d+)$/);
-    if (!match) return undefined;
-
-    return match[2];
-}
-
-function isOperator(value) {
-    return ['+', '-', '*', '/'].includes(value);
+    syncDecimalDotState();
 }
 
 function operate(operator) {
@@ -108,115 +123,135 @@ function operate(operator) {
         return;
     }
 
+    // Caso: già "op-": es. 5*-  e inserisci altro operatore
     if (isOperator(secondLast) && last === '-') {
         if (operator === '-') {
-            inputField.value = current.slice(0, -2) + operator + '-';
+            // mantiene op- (non aggiunge altro)
+            return;
         } else {
+            // sostituisce "op-" con "nuovoOp"
             inputField.value = current.slice(0, -2) + operator;
+            syncDecimalDotState();
+            return;
         }
-        document.getElementById('decimal-dot').disabled = false;
-        return;
     }
 
     if (isOperator(last)) {
         if (operator === '-' && last !== '-') {
+            // Consenti secondo meno: 5- -> 5-- ; 5* -> 5*-
             inputField.value += '-';
+            syncDecimalDotState();
             return;
         }
-
+        // sostituzione operatore singolo
         inputField.value = current.slice(0, -1) + operator;
+        syncDecimalDotState();
         return;
     }
 
+    // Se è già presente un'espressione completa, calcola prima
     if (getOperationFromInputField() !== undefined) {
         calculate();
         current = inputField.value;
     }
 
     inputField.value = current + operator;
-    document.getElementById('decimal-dot').disabled = false;
+    syncDecimalDotState();
 }
 
 function clearCalculation() {
     inputField.value = '';
-    document.getElementById('decimal-dot').disabled = false;
+    syncDecimalDotState();
 }
 
 function deleteLast() {
     inputField.value = inputField.value.slice(0, -1);
-
-    const currentToken = getCurrentToken();
-    if (!currentToken.includes('.')) {
-        document.getElementById('decimal-dot').disabled = false;
-    }
+    syncDecimalDotState();
 }
 
-function adition(num1, num2) {
-    return num1 + num2;
-}
+function addition(a, b) { return a + b; }
+function subtraction(a, b) { return a - b; }
+function multiplication(a, b) { return a * b; }
 
-function subtraction(num1, num2) {
-    return num1 - num2;
-}
-
-function division(num1, num2) {
-    if (num2 === 0) {
-        alert("Error: Division by zero is not allowed.");
+function division(a, b) {
+    if (b === 0) {
+        alert('Errore: divisione per zero non consentita.');
         clearCalculation();
         return undefined;
     }
-    return num1 / num2;
+    return a / b;
 }
 
-function multiplication(num1, num2) {
-    return num1 * num2;
+function getOperationFromInputField() {
+    const value = inputField.value.trim();
+    // supporta 5--2, 5+-2, 5*-2, 5/-2
+    const match = value.match(/^(-?\d*\.?\d+)([+\-*/])(-?\d*\.?\d+)$/);
+    return match ? match[2] : undefined;
+}
+
+function formatResult(result) {
+    return String(Number(result.toFixed(10)));
 }
 
 function calculate() {
     const expr = inputField.value.trim();
-    if (expr === '') return;
+    if (!expr) return;
 
-    const match = expr.match(/^(-?\d*\.?\d+)([+\-*/])(-?\d*\.?\d+)$/);
+    // Trova l'operatore BINARIO (+ - * /), ignorando il primo carattere
+    // così il "-" iniziale di un numero negativo non viene preso come operatore.
+    let opIndex = -1;
+    for (let i = 1; i < expr.length; i++) {
+        const ch = expr[i];
+        if (ch === '+' || ch === '*' || ch === '/') {
+            opIndex = i;
+            break;
+        }
+        if (ch === '-') {
+            // è operatore solo se il char precedente NON è operatore
+            // quindi in "5--2" il primo "-" è operatore, il secondo è segno del numero
+            if (!isOperator(expr[i - 1])) {
+                opIndex = i;
+                break;
+            }
+        }
+    }
 
-    if (!match) {
-        alert("Invalid operation");
+    if (opIndex === -1) {
+        alert('Operazione non valida.');
         return;
     }
 
-    const num1 = parseFloat(match[1]);
-    const operation = match[2];
-    const num2 = parseFloat(match[3]);
+    const left = expr.slice(0, opIndex);
+    const op = expr[opIndex];
+    const right = expr.slice(opIndex + 1);
 
-    if (Number.isNaN(num1) || Number.isNaN(num2)) {
-        alert("Invalid operation");
+    // right può essere negativo (es: "-2"), ma non vuoto
+    if (!left || !right) {
+        alert('Operazione non valida.');
+        return;
+    }
+
+    const num1 = Number(left);
+    const num2 = Number(right);
+
+    if (!Number.isFinite(num1) || !Number.isFinite(num2)) {
+        alert('Operazione non valida.');
         return;
     }
 
     let result;
-    switch (operation) {
-        case '+':
-            result = adition(num1, num2);
-            break;
-        case '-':
-            result = subtraction(num1, num2);
-            break;
-        case '*':
-            result = multiplication(num1, num2);
-            break;
-        case '/':
-            result = division(num1, num2);
-            break;
+    switch (op) {
+        case '+': result = addition(num1, num2); break;
+        case '-': result = subtraction(num1, num2); break;
+        case '*': result = multiplication(num1, num2); break;
+        case '/': result = division(num1, num2); break;
         default:
-            alert("Error: Invalid operation.");
+            alert('Operatore non valido.');
             return;
     }
 
-    if (result === undefined || Number.isNaN(result)) return;
+    if (result === undefined || !Number.isFinite(result)) return;
 
-    if (!Number.isInteger(result)) {
-        result = Number(result.toFixed(2));
-    }
-
-    inputField.value = String(result);
-    document.getElementById('decimal-dot').disabled = false;
+    inputField.value = formatResult(result);
+    syncDecimalDotState();
 }
