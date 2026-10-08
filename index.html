@@ -19,20 +19,21 @@
         <h1>CalculaIT</h1>
     </header>
 
-    <main id="calculator" aria-labelledby="calculator-title">
+    <main id="calculator" role="main" aria-labelledby="calculator-title">
         <section class="calculator" role="region" aria-labelledby="calculator-title">
             <h2 id="calculator-title" class="sr-only">Calculator</h2>
 
             <label for="currentNumber" class="sr-only">Calculator display</label>
-            <input type="text" id="currentNumber" name="currentNumber" inputmode="decimal" readonly aria-live="polite"
-                aria-atomic="true" aria-describedby="calculator-help" value="" />
+            <input type="text" id="currentNumber" name="currentNumber" inputmode="decimal" readonly
+                aria-label="Calculator display" aria-live="polite" aria-atomic="true" aria-describedby="calculator-help"
+                value="" />
 
             <p id="calculator-help" class="sr-only">
                 Use buttons or keyboard: numbers, operators, Enter to calculate,
                 Backspace to delete last character, Escape to clear all.
             </p>
 
-            <p id="status-message" class="sr-only" aria-live="assertive" aria-atomic="true"></p>
+            <p id="status-message" class="sr-only" role="status" aria-live="assertive" aria-atomic="true"></p>
 
             <div class="keypad" role="group" aria-label="Calculator keypad">
                 <button type="button" class="number-btn area-n1" onclick="populate('1')" aria-label="One">1</button>

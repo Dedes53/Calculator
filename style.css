@@ -58,13 +58,11 @@ header h1 {
     letter-spacing: 0.5px;
 }
 
-/* main centers calculator card */
 main {
     width: min(92vw, 360px);
     margin: 1.5rem auto;
 }
 
-/* section is the visual card */
 .calculator {
     background: var(--panel);
     border-radius: var(--radius-md);
@@ -72,7 +70,6 @@ main {
     padding: 1rem;
 }
 
-/* grid is on .keypad (IMPORTANT) */
 .keypad>* {
     min-width: 0;
 }
@@ -110,7 +107,7 @@ main {
     display: block;
 
     overflow: hidden;
-    text-overflow: ellipsis;
+
 }
 
 button {
@@ -191,7 +188,6 @@ button[aria-disabled="true"] {
     filter: grayscale(0.15);
 }
 
-/* explicit area mapping */
 .area-n1 {
     grid-area: n1;
 }
@@ -268,7 +264,6 @@ button[aria-disabled="true"] {
     grid-area: equal;
 }
 
-/* accessibility */
 .sr-only {
     position: absolute !important;
     width: 1px !important;
@@ -309,7 +304,6 @@ a:focus-visible {
     outline-offset: 3px;
 }
 
-/* responsive */
 @media (max-width: 380px) {
     .calculator {
         padding: 0.8rem;
