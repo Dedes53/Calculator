@@ -87,7 +87,7 @@ main {
         "clear equal equal ac";
 }
 
-#currentNumber {
+#display {
     grid-area: display;
     height: 72px;
     margin-bottom: 0.25rem;
@@ -100,7 +100,7 @@ main {
     font-size: 2rem;
 }
 
-#currentNumber {
+#display {
     width: 100%;
     max-width: 100%;
     min-width: 0;

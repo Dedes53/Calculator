@@ -1,10 +1,10 @@
-const inputField = document.getElementById('currentNumber');
+const inputField = document.getElementById('display');
 const decimalDotButton = document.getElementById('decimal-dot');
 
 const allowedOperators = ['+', '-', '*', '/'];
 
 if (!inputField) {
-    console.error("Elemento #currentNumber non trovato nel DOM.");
+    console.error("Elemento #display non trovato nel DOM.");
 } else {
     setupKeyboardInput();
     setupButtonInput(); // <- importante per i click
